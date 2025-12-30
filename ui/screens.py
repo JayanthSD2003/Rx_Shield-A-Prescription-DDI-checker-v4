@@ -97,8 +97,8 @@ class AdminDashboard(Screen):
             {
                 'timestamp': str(l['timestamp']),
                 'username': l['username'],
-                'preview': l['result_text'][:100].replace('\n', ' '),
-                'full_text': l['result_text']
+                'preview': (f"[Approved by Dr. {l['approved_by_doctor']}] " if l['is_doctor_approved'] else "") + l['result_text'][:100].replace('\n', ' '),
+                'full_text': l['result_text'] + (f"\n\n--- APPROVED BY DR. {l['approved_by_doctor']} ---" if l['is_doctor_approved'] else "")
             } for l in analysis_logs
         ]
 
@@ -185,8 +185,8 @@ class HistoryScreen(Screen):
             # Format: timestamp - result snippet for display
             self.ids.rv_history.data = [
                 {
-                    'text': f"[b]{l['timestamp']}[/b]\n{l['result_text'][:60]}...",
-                    'full_text': l['result_text'],
+                    'text': f"[b]{l['timestamp']}[/b]\n" + (f"[color=00aa00][Approved][/color] " if l['is_doctor_approved'] else "") + f"{l['result_text'][:60]}...",
+                    'full_text': l['result_text'] + (f"\n\n--- APPROVED BY DR. {l['approved_by_doctor']} ---" if l['is_doctor_approved'] else ""),
                     'image_path': l['image_path']
                 } 
                 for l in logs
@@ -743,6 +743,21 @@ class ResultsScreen(Screen):
         self.ids.result_image.source = ''
         self.manager.current = 'home'
 
+    def approve_prescription(self):
+        app = App.get_running_app()
+        if not hasattr(self, 'current_analysis_id') or not self.current_analysis_id:
+            self.show_popup("Error", "No analysis to approve.")
+            return
+            
+        from core.database import approve_analysis
+        success = approve_analysis(self.current_analysis_id, app.username)
+        if success:
+            self.show_popup("Success", f"Prescription approved by Dr. {app.username}")
+            # Potentially update the label to show approval
+            self.ids.results_label.text += f"\n\n[b][color=00ff00]✓ Approved by Dr. {app.username}[/color][/b]"
+        else:
+            self.show_popup("Error", "Failed to save approval.")
+
     def export_result(self, format_type):
         app = App.get_running_app()
         if not hasattr(app, 'recent_text') or not app.recent_text:
@@ -855,7 +870,7 @@ class ResultsScreen(Screen):
                 
                 # Save to DB
                 if hasattr(app, 'username'):
-                    save_analysis(app.username, image_path, final_text)
+                    self.current_analysis_id = save_analysis(app.username, image_path, final_text)
 
         threading.Thread(target=_process).start()
 

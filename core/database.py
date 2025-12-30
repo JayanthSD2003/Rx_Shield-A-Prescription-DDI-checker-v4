@@ -33,9 +33,19 @@ def init_db():
             image_path TEXT NOT NULL, 
             result_text TEXT NOT NULL, 
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            is_doctor_approved INTEGER DEFAULT 0,
+            approved_by_doctor TEXT,
             FOREIGN KEY (username) REFERENCES users(username)
         )
     ''')
+    
+    # Check if columns exist (Migration for existing DB)
+    try:
+        cursor.execute("ALTER TABLE analyses ADD COLUMN is_doctor_approved INTEGER DEFAULT 0")
+        cursor.execute("ALTER TABLE analyses ADD COLUMN approved_by_doctor TEXT")
+    except sqlite3.OperationalError:
+        # Columns already exist
+        pass
     
     # Login logs table
     cursor.execute('''
@@ -137,10 +147,25 @@ def save_analysis(username, image_path, result_text):
     try:
         cursor.execute("INSERT INTO analyses (username, image_path, result_text) VALUES (?, ?, ?)", 
                   (username, image_path, result_text))
+        last_id = cursor.lastrowid
+        conn.commit()
+        return last_id # Return the ID of the new analysis
+    except Exception as e:
+        print(f"Error saving analysis: {e}")
+        return None
+    finally:
+        conn.close()
+
+def approve_analysis(analysis_id, doctor_name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("UPDATE analyses SET is_doctor_approved = 1, approved_by_doctor = ? WHERE id = ?", 
+                      (doctor_name, analysis_id))
         conn.commit()
         return True
     except Exception as e:
-        print(f"Error saving analysis: {e}")
+        print(f"Error approving analysis: {e}")
         return False
     finally:
         conn.close()

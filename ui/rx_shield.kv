@@ -1066,6 +1066,19 @@
                 text: 'Export Word'
                 on_press: root.export_result('word')
 
+        # Doctor Approval Row (New)
+        BoxLayout:
+            size_hint_y: None
+            height: dp(45) if app.role == 'Doctor' else 0
+            opacity: 1 if app.role == 'Doctor' else 0
+            disabled: True if app.role != 'Doctor' else False
+            spacing: 20
+            
+            RoundedButton:
+                text: 'Approve Prescription'
+                background_color: [0, 0.7, 0, 1] # Green
+                on_press: root.approve_prescription()
+
         BoxLayout:
             size_hint_y: None
             height: 40

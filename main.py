@@ -33,6 +33,9 @@ class RxShieldApp(App):
 
     theme_icon = StringProperty('🌤️')
     
+    username = StringProperty('None')
+    role = StringProperty('None')
+    
     recent_text = StringProperty("")
     recent_drugs = ListProperty([]) # Track identified drugs
     
