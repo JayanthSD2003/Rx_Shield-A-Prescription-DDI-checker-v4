@@ -1,0 +1,28 @@
+Prescription_OCR_Results : 
+/
+/
+/
+/
+/
+/
+/
+===============================================================================================
+(Accuracy result with Gemini's OCR results but don't mention and show the gemini's OCR results)
+===============================================================================================
+
+Analysis of the prescription image:
+
+Now Show the Gemini's Analysis of the prescription image (Make sure you convert the Drug names to formulation as we did earlier but never mention yourself here as Gemini's analysis).
+
+================================================================================================
+
+Prescription Preview from searching the datasets(datasets from this project directory) and matching the prescription image and say whether they're safe or not.
+
+================================================================================================
+
+Knowledge Graph:
+
+<graph>
+
+======================================================================================================
+

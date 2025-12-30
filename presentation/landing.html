@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RxShield - Advanced Medication Safety</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00bfa5; /* Medical Teal/Green */
+            --primary-dark: #008f7a;
+            --secondary: #2c3e50; /* Dark Slate */
+            --light: #f8fcfb; /* Very light mint/white */
+            --white: #ffffff;
+            --text-main: #333;
+            --text-light: #666;
+            --shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        /* Hero Section */
+        header {
+            background: linear-gradient(135deg, var(--white) 0%, #e0f2f1 100%);
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Benefits Grid */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: var(--primary-dark);
+            margin-top: 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--secondary);
+        }
+
+        /* Tech Strips */
+        .tech-strip {
+            background: var(--secondary);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .tech-logos {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            font-weight: 600;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--white);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid #eee;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">RxShield <span>v4</span></div>
+        <div style="font-size: 0.9rem; color: var(--text-light);">Presentation View</div>
+    </nav>
+
+    <header>
+        <h1>Smart Medication Safety</h1>
+        <p class="subtitle">An advanced AI-powered desktop assistant helping patients and doctors identify Drug-Drug Interactions (DDIs) instantly.</p>
+        <a href="#" class="btn" style="cursor: default;">Running Instance: Active</a>
+    </header>
+
+    <section class="tech-strip">
+        <div class="container" style="padding: 0;">
+            <div class="tech-logos">
+                <span>⚡ Puter OCR</span>
+                <span>🤖 Google Gemini 2.5</span>
+                <span>🏥 RxNav API</span>
+                <span>🇮🇳 Indian Drug DB</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">Why RxShield Matters?</h2>
+        <div class="grid">
+            <!-- Patient Perspective -->
+            <div class="card">
+                <h3>For Patients</h3>
+                <p>Medication errors are a leading cause of hospitalizations. RxShield empowers patients by:</p>
+                <ul>
+                    <li>Instant checks on prescription images.</li>
+                    <li>Simple, jargon-free explanations of risks.</li>
+                    <li>Offline access to local drug details (Prices, Side-effects).</li>
+                    <li><strong>Peace of Mind</strong>: Know your meds are safe together.</li>
+                </ul>
+            </div>
+
+            <!-- Doctor Perspective -->
+            <div class="card">
+                <h3>For Doctors</h3>
+                <p>In a busy clinic, manual cross-checking is time-consuming. RxShield serves as a reliable second opinion:</p>
+                <ul>
+                    <li><strong>Double Verification</strong>: AI analysis backed by clinical RxNav data.</li>
+                    <li>Automated digitization of handwritten notes.</li>
+                    <li>Quick history lookup for patient profiles.</li>
+                    <li>Reduces liability by catching potential interactions early.</li>
+                </ul>
+            </div>
+
+            <!-- Tech Perspective -->
+            <div class="card">
+                <h3>The Technology</h3>
+                <p>Under the hood, RxShield combines multiple state-of-the-art systems:</p>
+                <ul>
+                    <li><strong>Hybrid OCR</strong>: Cleans noisy image data for high precision.</li>
+                    <li><strong>Knowledge Graph</strong>: Visualizes relationships between drugs.</li>
+                    <li><strong>Generative AI</strong>: Understands context (Age, Weight) to tailor warnings.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Project Presentation for RxShield v4 | Developed by JayanthSD2003</p>
+    </footer>
+
+</body>
+</html>

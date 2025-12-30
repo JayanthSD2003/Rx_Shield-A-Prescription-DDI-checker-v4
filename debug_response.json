@@ -1,0 +1,35 @@
+{
+  "success": true,
+  "service": {
+    "name": "ai-chat"
+  },
+  "result": {
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "content": "The image is a solid block of a bright red color. There's no additional detail or texture; it is completely uniform.",
+      "refusal": null,
+      "annotations": []
+    },
+    "logprobs": null,
+    "finish_reason": "stop",
+    "usage": [
+      {
+        "type": "prompt",
+        "model": "gpt-4o-mini",
+        "amount": 8511,
+        "cost": 127665
+      },
+      {
+        "type": "completion",
+        "model": "gpt-4o-mini",
+        "amount": 24,
+        "cost": 1440
+      }
+    ],
+    "via_ai_chat_service": true
+  },
+  "metadata": {
+    "service_used": "openai-completion"
+  }
+}

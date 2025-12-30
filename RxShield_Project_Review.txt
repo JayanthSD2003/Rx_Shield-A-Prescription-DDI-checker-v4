@@ -1,0 +1,110 @@
+RxShield Technical Implementation Report
+Generated for: Major Project Documentation
+Date: December 2025
+
+1. SYSTEM OVERVIEW
+------------------
+RxShield is a desktop-based medical analysis application designed to digitize prescriptions and perform real-time Drug-Drug Interaction (DDI) checks. Unlike web-only interfaces, RxShield is a "Local-First" Python application (PyApp) that integrates cloud-based AI for reasoning with strict, deterministic APIs for clinical safety.
+
+Key functionalities include:
+- Optical Character Recognition (OCR) for handwritten and printed prescriptions.
+- Automated DDI detection using the NLM RxNorm standard.
+- Dynamic Knowledge Graph visualization of patient-drug-condition relationships.
+- Role-Based Access Control (RBAC) securely managing Administrators, Doctors, and Users.
+
+2. TECHNOLOGY STACK
+-------------------
+[Frontend]
+- Framework: Kivy (v2.2.1) & KivyMD
+- Design Pattern: NUI (Natural User Interface) with ScreenManager routing.
+- Theming: Dynamic light/dark mode switching with custom medical color palettes (Teal/Blue).
+
+[Backend]
+- Language: Python 3.9+
+- Database: SQLite3 (local `rx_shield.db`).
+- Security: `bcrypt` for password hashing, `python-dotenv` for credential management.
+
+[AI & Analysis Engines]
+- General Purpose AI: Google Gemini 1.5/2.5 Flash (via `google-generativeai`).
+- Clinical API: National Library of Medicine (NLM) RxNav API.
+- Graphing: NetworkX (Logic) + Matplotlib (Rendering).
+
+3. CORE MODULE IMPLEMENTATION
+-----------------------------
+
+3.1. OCR & Text Processing Pipeline
+File: `core/drug_client.py`, `core/gemini_client.py`
+
+The system employs a multi-stage data extraction pipeline to handle the variability of medical prescriptions.
+
+- Stage 1: Raw Extraction
+  The image is processed to extract raw text lines. **This raw OCR output is immediately displayed to the user for transparency.**
+
+- Stage 2: Heuristic Cleaning (`extract_potential_drugs`)
+  The raw text is filtered through a local heuristic engine:
+  - Noise Filtration: A `NOISE_WORDS` set (e.g., "TAB", "RX", "DOCTOR", "DATE") removes administrative text.
+  - Dosage Removal: Regex patterns (`\d+mg`, `1-0-0`) strip dosage information to isolate the drug name.
+  - Length/Char Checks: Fragments smaller than 3 characters or containing special symbols are discarded.
+
+- Stage 3: AI Enhancement
+  If the heuristic extraction is ambiguous, the text is passed to the Gemini model with a specific prompt to correct spelling errors based on context (e.g., correcting "Pcm" to "Paracetamol").
+
+3.2. Drug-Drug Interaction (DDI) Engine
+File: `core/drug_client.py`
+
+This is the safety-critical component of the application. It avoids AI hallucinations by relying on the NLM RxNav database.
+
+- Step 1: RxCUI Resolution (`get_rxcui`)
+  - Implementation: Uses `functools.lru_cache` (size=1000) to cache results and minimize API latency.
+  - Logic: First attempts an "Exact Match" against the RxNav API. If that fails, it attempts an "Approximate Search".
+  - Output: Returns the unique RxNorm Concept Unique Identifier (RxCUI) for the drug.
+
+- Step 2: Interaction Checking (`check_interactions_for_list`)
+  - Input: List of identified drug names.
+  - Process: 
+    1. Resolves all names to RxCUIs.
+    2. Constructs a multi-drug query: `interaction/list.json?rxcuis=ID1+ID2+...`
+    3. Parses the JSON response to extract `interactionPair` objects.
+  - Safety Fallback: Interactive mapping logic handles brand-to-generic conversion locally using the "Indian Drug Dataset" (CSV integration) before verifying with RxNav.
+
+3.3. Knowledge Graph Visualization
+File: `core/knowledge_graph.py`
+
+RxShield generates a unique visual representation for every analysis report.
+
+- Graph Construction:
+  - Nodes: Patient (Center), Diagnosis (Top Semi-circle), Drugs (Bottom Semi-circle).
+  - Edges: Directed edges represent relationships.
+    - Green (Thick, Solid): Protective interaction.
+    - Red (Dashed): Adverse risk.
+    - Grey (Thin): Prescription flow.
+
+- Rendering:
+  - Uses `networkx` for graph topology and `matplotlib` for drawing.
+  - Custom Layout: A modified radial layout positions conditions at the top and drugs at the bottom for readability.
+  - Output: Saves as a high-DPI PNG image (`knowledge_graph.png`) which is dynamically reloaded in the UI.
+
+4. SYSTEM SECURITY
+------------------
+File: `core/auth.py` (implied), `main.py`
+
+- Credential Storage:
+  No hardcoded keys. API keys are loaded from `.env` at runtime.
+  
+- Password Handling:
+  User passwords are hashed using `bcrypt` with automatic salting. The database stores only the hash, ensuring security even if the database file is compromised.
+
+- Session Security:
+  The application is designed as a local-session tool. Patient data is processed in memory for the duration of the analysis and is not permanently stored or uploaded to any third-party server beyond the necessary stateless API calls.
+
+5. PERFORMANCE & BENCHMARKING
+-----------------------------
+File: `benchmark_analysis.py`
+
+The project includes a self-testing suite to ensure reliability:
+- Noise Injection Tests: Simulates poor OCR quality by injecting typos into drug names to test the resiliency of the resolution algorithm.
+- Latency Tracking: Measures the response time of the RxNav API and local database queries to ensure the UI remains responsive.
+
+6. CONCLUSION
+-------------
+RxShield demonstrates a robust implementation of "AI + Rules" architecture. By decoupling the creative interpretation (AI/OCR) from the factual verification (RxNav/DDI), it achieves high accuracy suitable for medical informational purposes while minimizing the "Black Box" risk associated with pure AI solutions.

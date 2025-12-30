@@ -1,0 +1,1709 @@
+#:kivy 2.1.0
+#:import utils kivy.utils
+
+<RoundedButton@Button>:
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: app.primary_color if self.state == 'normal' else app.secondary_color
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20,]
+    color: 1, 1, 1, 1
+
+<CardLabel@Label>:
+    color: app.text_color
+
+<LoginScreen>:
+    name: 'login'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'horizontal'
+        padding: 50
+        spacing: 30
+        size_hint: None, None
+        size: 950, 600
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        # Left Side: Description Card
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 40
+            spacing: 20
+            canvas.before:
+                Color:
+                    rgba: app.card_color
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [20,]
+            
+            Label:
+                text: 'About Rx Shield'
+                font_size: 28
+                bold: True
+                color: app.primary_color
+                size_hint_y: None
+                height: 50
+                halign: 'left'
+                text_size: self.width, None
+
+
+            ScrollView:
+                size_hint_y: None
+                height: 250 # Give it a fixed height or let it fill available space
+                do_scroll_x: False
+                
+                Label:
+                    text: "Rx_Shield is a comprehensive Prescription Drug Interaction Checker designed to enhance patient safety.\n\nIt digitizes handwritten medical prescriptions and cross-references medications to identify potential drug interactions, dosage errors, and provide safety warnings in real-time.\n\n[b]Developed by:[/b] Jayanth SD\n[ref=https://www.linkedin.com/in/jayanth-sd-0842b6223][color=2196F3]Visit me on LinkedIn[/color][/ref] | [ref=https://github.com/JayanthSD2003][color=2196F3]View my projects on Github[/color][/ref]\n\n[b]Guided By:[/b] Dr. Ananth GS\n[ref=https://www.linkedin.com/in/dr-ananth-g-s-1b06356a/][color=2196F3]LinkedIn[/color][/ref]"
+                    markup: True
+                    on_ref_press: app.open_link(args[1])
+                    text_size: self.width, None
+                    size_hint_y: None
+                    height: self.texture_size[1] + 20 # Add padding
+                    valign: 'top'
+                    halign: 'left'
+                    color: app.text_color
+                    font_size: 16
+                    line_height: 1.5
+                    padding_x: 10
+
+            Widget:
+                # Spacer
+                size_hint_y: 1
+
+            Label:
+                text: "Key components:\n• Handwritten text recognition\n• Drug name NER\n• Knowledge graph integration\n• Interaction detection"
+                text_size: self.width, None
+                size_hint_y: None
+                height: 120
+                valign: 'bottom'
+                halign: 'left'
+                color: app.secondary_color
+                font_size: 15
+                line_height: 1.4
+
+        # Right Side: Login Form
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 40
+            spacing: 20
+            size_hint_x: 0.8
+            canvas.before:
+                Color:
+                    rgba: app.card_color
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [20,]
+            
+            Widget:
+                size_hint_y: None
+                height: 20
+            
+            Label:
+                text: 'Rx Shield'
+                font_size: 36
+                bold: True
+                color: app.primary_color
+                size_hint_y: None
+                height: 60
+                
+            Label:
+                text: 'Login to your account'
+                font_size: 16
+                color: app.text_color
+                size_hint_y: None
+                height: 30
+
+            Widget:
+                size_hint_y: 0.1
+
+            TextInput:
+                id: username
+                hint_text: 'Username'
+                multiline: False
+                size_hint_y: None
+                height: 50
+                background_normal: ''
+                background_active: ''
+                background_color: 0.95, 0.95, 0.95, 1
+                foreground_color: 0, 0, 0, 1
+                padding_y: [15, 15]
+                font_size: 16
+                
+            BoxLayout:
+                size_hint_y: None
+                height: 50
+                orientation: 'horizontal'
+                spacing: 5
+
+                TextInput:
+                    id: password
+                    hint_text: 'Password'
+                    password: True if show_pass_login.state == 'normal' else False
+                    multiline: False
+                    size_hint_y: None
+                    height: 50
+                    background_normal: ''
+                    background_active: ''
+                    background_color: 0.95, 0.95, 0.95, 1
+                    foreground_color: 0, 0, 0, 1
+                    padding_y: [15, 15]
+                    font_size: 16
+                
+                ToggleButton:
+                    id: show_pass_login
+                    text: 'Show' if self.state == 'normal' else 'Hide'
+                    size_hint_x: None
+                    width: 60
+                    group: 'login_pass_visibility'
+                    background_color: 0,0,0,0
+                    color: app.secondary_color
+                    font_size: 14
+
+            Spinner:
+                id: login_role
+                text: 'User'
+                values: ('User', 'Doctor', 'Admin', 'RootAdmin')
+                size_hint_y: None
+                height: 40
+                background_color: app.primary_color
+                color: 1, 1, 1, 1
+                background_normal: ''
+
+            Widget:
+                size_hint_y: 0.1
+
+            RoundedButton:
+                text: 'Login'
+                size_hint_y: None
+                height: 55
+                font_size: 18
+                bold: True
+                on_press: root.do_login(username.text, password.text, login_role.text)
+
+            BoxLayout:
+                size_hint_y: None
+                height: 40
+                spacing: 10
+                
+                Button:
+                    text: 'Create new account'
+                    on_press: root.manager.current = 'register'
+                    background_color: 0, 0, 0, 0
+                    color: app.secondary_color
+                    font_size: 14
+
+                Button:
+                    text: 'Exit'
+                    on_press: root.exit_app()
+                    background_color: 0, 0, 0, 0
+                    color: 0.5, 0.5, 0.5, 1
+                    font_size: 14
+
+            Widget:
+                size_hint_y: None
+                height: 20
+
+<RegisterScreen>:
+    name: 'register'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 50
+        spacing: 20
+        size_hint: None, None
+        size: 400, 600
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        
+        canvas.before:
+            Color:
+                rgba: app.card_color
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [20,]
+                
+        Label:
+            text: 'Register'
+            font_size: 32
+            bold: True
+            color: app.primary_color
+            size_hint_y: None
+            height: 60
+
+        TextInput:
+            id: username
+            hint_text: 'Username'
+            multiline: False
+            size_hint_y: None
+            height: 40
+            background_normal: ''
+            background_active: ''
+            background_color: 0.95, 0.95, 0.95, 1
+            foreground_color: 0, 0, 0, 1
+            padding_y: [10, 10]
+            
+        BoxLayout:
+            size_hint_y: None
+            height: 40
+            orientation: 'horizontal'
+            spacing: 5
+            
+            TextInput:
+                id: password
+                hint_text: 'Password'
+                password: True if show_pass_reg.state == 'normal' else False
+                multiline: False
+                size_hint_y: None
+                height: 40
+                background_normal: ''
+                background_active: ''
+                background_color: 0.95, 0.95, 0.95, 1
+                foreground_color: 0, 0, 0, 1
+                padding_y: [10, 10]
+            
+            ToggleButton:
+                id: show_pass_reg
+                text: 'Show' if self.state == 'normal' else 'Hide'
+                size_hint_x: None
+                width: 50
+                group: 'reg_pass_visibility'
+                background_color: 0,0,0,0
+                color: app.secondary_color
+                font_size: 12
+
+        Spinner:
+            id: role_spinner
+            text: 'User'
+            values: ('User', 'Doctor')
+            size_hint_y: None
+            height: 40
+            background_color: app.primary_color
+            color: 1, 1, 1, 1
+
+        RoundedButton:
+            text: 'Register'
+            on_press: root.do_register(username.text, password.text, role_spinner.text)
+            size_hint_y: None
+            height: 50
+
+        Button:
+            text: 'Back to Login'
+            on_press: root.manager.current = 'login'
+            background_color: 0, 0, 0, 0
+            color: app.secondary_color
+            size_hint_y: None
+            height: 30
+
+<AdminDashboard>:
+    name: 'admin_dashboard'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 10
+
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Label:
+                text: 'Admin Dashboard'
+                font_size: 24
+                bold: True
+                color: app.text_color
+            
+            Button:
+                text: 'Toggle Theme'
+                size_hint_x: None
+                width: 120
+                on_press: app.toggle_theme()
+                background_color: 0,0,0,0
+                color: app.secondary_color
+
+            Button:
+                text: 'Logout'
+                size_hint_x: None
+                width: 100
+                on_press: root.logout()
+                background_color: 0,0,0,0
+                color: 1, 0.2, 0.2, 1
+
+        TabbedPanel:
+            do_default_tab: False
+            background_color: app.card_color
+            tab_width: 150
+            
+            TabbedPanelItem:
+                text: 'Create Account'
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: 30
+                    spacing: 20
+                    canvas.before:
+                        Color:
+                            rgba: app.card_color
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10,]
+
+                    Label:
+                        text: 'Create New User/Admin'
+                        font_size: 20
+                        color: app.primary_color
+                        size_hint_y: None
+                        height: 40
+                    
+                    TextInput:
+                        id: create_username
+                        hint_text: 'Username'
+                        size_hint_y: None
+                        height: 40
+                        multiline: False
+                    
+                    BoxLayout:
+                        size_hint_y: None
+                        height: 40
+                        orientation: 'horizontal'
+                        spacing: 5
+
+                        TextInput:
+                            id: create_password
+                            hint_text: 'Password'
+                            size_hint_y: None
+                            height: 40
+                            multiline: False
+                            password: True if show_pass_create.state == 'normal' else False
+                        
+                        ToggleButton:
+                            id: show_pass_create
+                            text: 'Show' if self.state == 'normal' else 'Hide'
+                            size_hint_x: None
+                            width: 50
+                            group: 'create_pass_visibility'
+                            background_color: 0,0,0,0
+                            color: app.primary_color
+                            font_size: 12
+                    
+                    Spinner:
+                        id: create_role
+                        text: 'User'
+                        values: ('User', 'Doctor', 'Admin')
+                        size_hint_y: None
+                        height: 40
+                        background_color: app.primary_color
+                    
+                    RoundedButton:
+                        text: 'Create Account'
+                        size_hint_y: None
+                        height: 50
+                        on_press: root.create_account(create_username.text, create_password.text, create_role.text)
+                    
+                    Label:
+                        text: 'Note: Only RootAdmin can create Admins (Max 3).'
+                        color: app.text_color
+                        font_size: 12
+
+            TabbedPanelItem:
+                text: 'Pending Approvals'
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: 10
+                    canvas.before:
+                        Color:
+                            rgba: app.card_color
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    RecycleView:
+                        id: rv_approvals
+                        viewclass: 'UserApprovalRow'
+                        RecycleBoxLayout:
+                            default_size: None, dp(40)
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+
+            TabbedPanelItem:
+                text: 'View Users'
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: 10
+                    canvas.before:
+                        Color:
+                            rgba: app.card_color
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    RecycleView:
+                        id: rv_users
+                        viewclass: 'UserViewRow'
+                        RecycleBoxLayout:
+                            default_size: None, dp(30)
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+
+            TabbedPanelItem:
+                text: 'Login Logs'
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: 10
+                    canvas.before:
+                        Color:
+                            rgba: app.card_color
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    RecycleView:
+                        id: rv_login_logs
+                        viewclass: 'LogLabel'
+                        RecycleBoxLayout:
+                            default_size: None, dp(30)
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+
+            TabbedPanelItem:
+                text: 'Analysis Logs'
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: 10
+                    canvas.before:
+                        Color:
+                            rgba: app.card_color
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    RecycleView:
+                        id: rv_analysis_logs
+                        viewclass: 'LogLabel'
+                        RecycleBoxLayout:
+                            default_size: None, dp(30)
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+
+            TabbedPanelItem:
+                text: 'User Management'
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: 10
+                    spacing: 10
+                    canvas.before:
+                        Color:
+                            rgba: app.card_color
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    TextInput:
+                        id: manage_username
+                        hint_text: 'Username to manage'
+                        size_hint_y: None
+                        height: 40
+                    BoxLayout:
+                        size_hint_y: None
+                        height: 40
+                        orientation: 'horizontal'
+                        spacing: 5
+
+                        TextInput:
+                            id: new_password
+                            hint_text: 'New Password'
+                            size_hint_y: None
+                            height: 40
+                            multiline: False
+                            password: True if show_pass_manage.state == 'normal' else False
+                        
+                        ToggleButton:
+                            id: show_pass_manage
+                            text: 'Show' if self.state == 'normal' else 'Hide'
+                            size_hint_x: None
+                            width: 50
+                            group: 'manage_pass_visibility'
+                            background_color: 0,0,0,0
+                            color: app.primary_color
+                            font_size: 12
+                    RoundedButton:
+                        text: 'Change Password'
+                        size_hint_y: None
+                        height: 40
+                        on_press: root.change_user_password(manage_username.text, new_password.text)
+
+<UserApprovalRow@BoxLayout>:
+    username: ''
+    role: ''
+    orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgba: 0.9, 0.9, 0.9, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        text: root.username
+        color: 0,0,0,1
+    Label:
+        text: root.role
+        color: 0,0,0,1
+    Button:
+        text: 'Approve'
+        on_release: app.root.get_screen('admin_dashboard').approve_user(root.username)
+
+<UserViewRow@BoxLayout>:
+    username: ''
+    role: ''
+    orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgba: 0.9, 0.9, 0.9, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        text: root.username
+        color: 0,0,0,1
+        size_hint_x: 0.5
+    Label:
+        text: root.role
+        color: 0,0,0,1
+        size_hint_x: 0.5
+
+<LogLabel@Label>:
+    text_size: self.width, None
+    halign: 'left'
+    color: app.text_color
+
+<WelcomeScreen>:
+    name: 'welcome'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 50
+        spacing: 20
+        
+        Label:
+            id: welcome_label
+            text: 'Welcome to Rx Shield'
+            font_size: 32
+            color: app.text_color
+            
+        RoundedButton:
+            text: 'Go to Dashboard'
+            size_hint: None, None
+            size: 200, 50
+            pos_hint: {'center_x': 0.5}
+            on_press: root.manager.current = 'dashboard'
+
+<HomeScreen>:
+    name: 'home'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 30
+        spacing: 20
+        
+        # Header with Welcome Message
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            orientation: 'vertical'
+            
+            BoxLayout:
+                size_hint_y: None
+                height: 40
+                Label:
+                    id: welcome_label
+                    text: 'Welcome'
+                    font_size: 28
+                    bold: True
+                    color: app.primary_color
+                    halign: 'left'
+                    text_size: self.width, None
+                
+                Button:
+                    text: 'Toggle Theme'
+                    font_size: 14
+                    size_hint_x: None
+                    width: 100
+                    on_press: app.toggle_theme()
+                    background_color: 0,0,0,0
+                    color: app.secondary_color
+
+                # Alert System Placeholder
+                Label:
+                    text: 'System: All Systems Nominal'
+                    color: (0, 1, 0, 1)
+                    font_size: 12
+                    size_hint_x: None
+                    width: 150
+
+
+                Button:
+                    text: 'Profile'
+                    size_hint_x: None
+                    width: 80
+                    on_press: root.show_profile()
+                    background_color: 0,0,0,0
+                    color: app.primary_color
+                    bold: True
+
+        # Main Content Area (Horizontal Split)
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 30
+            
+            # Left Side: Recent Analysis & Actions
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 20
+                size_hint_x: 0.5
+                
+                # Recent Analysis Card
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: 10
+                    canvas.before:
+                        Color:
+                            rgba: app.card_color
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [15,]
+                    padding: 20
+                    
+                    Label:
+                        text: 'Recent Analysis'
+                        font_size: 20
+                        bold: True
+                        color: app.secondary_color
+                        size_hint_y: None
+                        height: 30
+                        halign: 'left'
+                        text_size: self.width, None
+                        
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 10
+                        
+                        Image:
+                            id: recent_image
+                            source: ''
+                            size_hint_x: 0.4
+                            allow_stretch: True
+                            keep_ratio: True
+                            
+                        Label:
+                            id: recent_text
+                            text: 'No recent analysis found.'
+                            color: app.text_color
+                            text_size: self.width, None
+                            valign: 'top'
+                            halign: 'left'
+                            shorten: True
+                            shorten_from: 'right'
+                    
+                    Label:
+                        id: recent_filename
+                        text: ''
+                        color: 0.5, 0.5, 0.5, 1
+                        font_size: 12
+                        size_hint_y: None
+                        height: 20
+                        halign: 'left'
+                        text_size: self.width, None
+
+                RoundedButton:
+                    text: 'View Knowledge Graph'
+                    size_hint_y: None
+                    height: 50
+                    on_press: root.manager.current = 'graph'; app.generate_knowledge_graph()
+
+                RoundedButton:
+                    text: 'New Analysis'
+                    size_hint_y: None
+                    height: 60
+                    on_press: root.manager.current = 'dashboard'
+                    
+                RoundedButton:
+                    text: 'Pharmacy Locator'
+                    size_hint_y: None
+                    height: 60
+                    on_press: root.manager.current = 'pharmacy_locator'
+
+                RoundedButton:
+                    text: 'Medication Alerts'
+                    size_hint_y: None
+                    height: 50
+                    on_press: root.manager.current = 'reminders'
+
+                RoundedButton:
+                    text: 'View History'
+                    size_hint_y: None
+                    height: 50
+                    background_color: 0, 0, 0, 0
+                    color: 1, 1, 1, 1
+                    on_press: root.manager.current = 'history'
+                    
+                RoundedButton:
+                    text: 'Manual Entry'
+                    size_hint_y: None
+                    height: 50
+                    on_press: root.manager.current = 'manual_entry'
+                    
+
+
+            # Right Side: Description Card
+            BoxLayout:
+                orientation: 'vertical'
+                padding: 30
+                spacing: 15
+                size_hint_x: 0.5
+                canvas.before:
+                    Color:
+                        rgba: app.card_color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15,]
+                
+                Label:
+                    text: 'Project Overview'
+                    font_size: 22
+                    bold: True
+                    color: app.primary_color
+                    size_hint_y: None
+                    height: 40
+                    halign: 'left'
+                    text_size: self.width, None
+
+                Label:
+                    text: "Rx_Shield: Prescription Drug Interaction Checker\n\nDigitize handwritten medical prescriptions and cross-reference medications to identify potential drug interactions and safety warnings.\n\nKey components:\n- Handwritten text recognition\n- Drug name NER\n- Interaction detection\n- Knowledge graph integration\n\n[b]Developed by:[/b] Jayanth SD\n[ref=https://www.linkedin.com/in/jayanth-sd-0842b6223][color=2196F3]Visit me on LinkedIn[/color][/ref] | [ref=https://github.com/JayanthSD2003][color=2196F3]View my Github[/color][/ref]\n\n[b]Guided By:[/b] Dr. Ananth GS\n[ref=https://www.linkedin.com/in/dr-ananth-g-s-1b06356a/][color=2196F3]LinkedIn[/color][/ref]"
+                    markup: True
+                    on_ref_press: app.open_link(args[1])
+                    text_size: self.width, None
+                    valign: 'top'
+                    halign: 'left'
+                    color: app.text_color
+                    font_size: 16
+                    line_height: 1.4
+
+<DashboardScreen>:
+    name: 'dashboard'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 30
+        spacing: 20
+        
+        Label:
+            text: 'Upload Prescription'
+            font_size: 24
+            bold: True
+            color: app.primary_color
+            size_hint_y: None
+            height: 50
+            
+        BoxLayout:
+            orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: 0.1, 0.2, 0.3, 1 # Keep dark for filechooser contrast or update if needed
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+            padding: 10
+            
+            FileChooserListView:
+                id: filechooser
+                filters: ['*.png', '*.jpg', '*.jpeg']
+                multiselect: False
+                
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            spacing: 20
+            
+            RoundedButton:
+                text: 'Analyze Image'
+                on_press: root.analyze_image(filechooser.selection)
+                
+            RoundedButton:
+                text: 'Back to Home'
+                on_press: root.manager.current = 'home'
+
+<ResultsScreen>:
+    name: 'results'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 30
+        spacing: 20
+        
+        Label:
+            text: 'Analysis Results'
+            font_size: 24
+            bold: True
+            color: app.primary_color
+            size_hint_y: None
+            height: 40
+            
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 20
+            
+            # Left Side: Text Output
+            ScrollView:
+                size_hint_x: 0.6
+                canvas.before:
+                    Color:
+                        rgba: app.card_color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10,]
+                Label:
+                    id: results_label
+                    text: 'Processing...'
+                    color: app.text_color
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 20, 20
+            
+            # Right Side: Image
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.4
+                spacing: 10
+                
+                Label:
+                    text: 'Scanned Image'
+                    color: app.secondary_color
+                    size_hint_y: None
+                    height: 30
+                    bold: True
+                    
+                Image:
+                    id: result_image
+                    source: ''
+                    allow_stretch: True
+                    keep_ratio: True
+                    canvas.before:
+                        Color:
+                            rgba: 0.8, 0.8, 0.8, 1
+                        Line:
+                            rectangle: self.x, self.y, self.width, self.height
+                            width: 1
+
+                        Line:
+                            rectangle: self.x, self.y, self.width, self.height
+                            width: 1
+
+                Label:
+                    text: 'Knowledge Graph'
+                    color: app.secondary_color
+                    size_hint_y: None
+                    height: 30
+                    bold: True
+
+                Image:
+                    id: graph_preview
+                    source: ''
+                    nocache: True
+                    allow_stretch: True
+                    keep_ratio: True
+                    canvas.before:
+                        Color:
+                            rgba: 0.8, 0.8, 0.8, 1
+                        Line:
+                            rectangle: self.x, self.y, self.width, self.height
+                            width: 1
+
+        Label:
+            text: "DISCLAIMER: This analysis is trained and working on a limited resource before droping or drawing into the conclusion make sure contact that doctor who wrote that particular prescription and take is verbal consent."
+            color: 1, 0, 0, 1 # Red
+            bold: True
+            size_hint_y: None
+            height: 60
+            text_size: self.width, None
+            halign: 'center'
+            font_size: 14
+        
+        # Export Options Row
+        BoxLayout:
+            size_hint_y: None
+            height: 40
+            spacing: 20
+            
+            RoundedButton:
+                text: 'Export PDF'
+                on_press: root.export_result('pdf')
+                
+            RoundedButton:
+                text: 'Export Word'
+                on_press: root.export_result('word')
+
+        BoxLayout:
+            size_hint_y: None
+            height: 40
+            spacing: 20
+            
+            RoundedButton:
+                text: 'Back to Dashboard'
+                on_press: root.reset_and_back()
+                
+            RoundedButton:
+                text: 'Back to Home'
+                on_press: root.go_home()
+                
+            RoundedButton:
+                text: 'Scan Another'
+                on_press: root.reset_and_back()
+
+<HistoryRow@Button>:
+    text: ''
+    full_text: ''
+    image_path: ''
+    background_color: 0,0,0,0
+    color: app.text_color
+    text_size: self.width - dp(40), None
+    valign: 'center'
+    halign: 'left'
+    markup: True
+    on_release: app.root.get_screen('history').show_full_text(self.full_text, self.image_path)
+    canvas.before:
+        Color:
+            rgba: app.card_color
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [15,]
+        # Add subtle border
+        Color:
+            rgba: app.secondary_color
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, 15)
+            width: 1
+
+<HistoryScreen>:
+    name: 'history'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 10
+
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Label:
+                text: 'Analysis History'
+                font_size: 24
+                bold: True
+                color: app.text_color
+            
+            Button:
+                text: 'View KG'
+                size_hint_x: None
+                width: 100
+                on_press: root.manager.current = 'graph'; app.generate_knowledge_graph()
+                background_color: 0, 0, 0, 0
+                color: app.secondary_color
+            
+            Button:
+                text: 'Back'
+                size_hint_x: None
+                width: 100
+                on_press: root.manager.current = 'home'
+                background_color: 0, 0, 0, 0
+                color: app.secondary_color
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 10
+            canvas.before:
+                Color:
+                    rgba: app.card_color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            RecycleView:
+                id: rv_history
+                viewclass: 'HistoryRow'
+                RecycleBoxLayout:
+                    default_size: None, dp(80) # Taller rows for card look
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(15) # Spacing between cards
+                    padding: dp(10)
+
+<PharmacyItem@BoxLayout>:
+    name: ''
+    address: ''
+    lat: 0
+    lon: 0
+    distance: ''
+    orientation: 'vertical'
+    size_hint_y: None
+    height: 100
+    padding: 10
+    canvas.before:
+        Color:
+            rgba: app.card_color
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10,]
+        Color:
+            rgba: app.secondary_color
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, 10)
+            width: 1
+            
+    Label:
+        text: root.name
+        bold: True
+        color: app.primary_color
+        size_hint_y: None
+        height: 30
+        text_size: self.width, None
+        halign: 'left'
+        shorten: True
+        
+    Label:
+        text: root.address
+        color: app.text_color
+        font_size: 12
+        size_hint_y: None
+        height: 40
+        text_size: self.width, None
+        valign: 'top'
+        halign: 'left'
+        shorten: True
+        
+    BoxLayout:
+        size_hint_y: None
+        height: 30
+        Label:
+            text: root.distance
+            color: 0.5, 0.5, 0.5, 1
+            font_size: 11
+            halign: 'left'
+            text_size: self.width, None
+        
+        Button:
+            text: "Open Map"
+            size_hint_x: None
+            width: 80
+            background_color: app.primary_color
+            color: 1,1,1,1
+            font_size: 11
+            on_release: app.root.get_screen('pharmacy_locator').open_pharmacy(root.lat, root.lon)
+
+<PharmacyLocatorScreen>:
+    name: 'pharmacy_locator'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 10
+
+        # Top Bar
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            spacing: 10
+            
+            Button:
+                text: "Back"
+                size_hint_x: None
+                width: 80
+                on_release: root.manager.current = 'home'
+                background_color: 0,0,0,0
+                color: app.secondary_color
+                
+            TextInput:
+                id: search_input
+                hint_text: "Enter location (e.g., Bangalore)"
+                multiline: False
+                on_text_validate: root.search_pharmacies(self.text)
+                
+            Button:
+                text: "Search"
+                size_hint_x: None
+                width: 100
+                background_color: app.primary_color
+                on_release: root.search_pharmacies(search_input.text)
+
+        # Content Area
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 20
+            
+            # Map Container (Left) with Zoom Controls
+            RelativeLayout:
+                size_hint_x: 0.6
+                
+                BoxLayout:
+                    id: map_container
+                    size_hint: (1, 1)
+                    pos_hint: {'x': 0, 'y': 0}
+                    canvas.before:
+                        Color:
+                            rgba: 0.8, 0.8, 0.8, 1
+                        Line:
+                            rectangle: self.x, self.y, self.width, self.height
+                            width: 1
+                            
+                # Zoom Controls Overlay
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint: (None, None)
+                    size: (50, 100)
+                    pos_hint: {'right': 0.98, 'bottom': 0.05}
+                    spacing: 5
+                    
+                    Button:
+                        text: "+"
+                        font_size: 20
+                        background_color: 1, 1, 1, 0.8
+                        color: 0, 0, 0, 1
+                        on_release: root.text_zoom_in()
+                        
+                    Button:
+                        text: "-"
+                        font_size: 20
+                        background_color: 1, 1, 1, 0.8
+                        color: 0, 0, 0, 1
+                        on_release: root.text_zoom_out()
+            
+            # List Container (Right)
+            BoxLayout:
+                size_hint_x: 0.4
+                orientation: 'vertical'
+                canvas.before:
+                    Color:
+                        rgba: 0.9, 0.9, 0.9, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10,]
+                padding: 10
+                
+                Label:
+                    text: "Nearby Pharmacies"
+                    size_hint_y: None
+                    height: 30
+                    bold: True
+                    color: app.text_color
+                
+                RecycleView:
+                    id: rv_pharmacies
+                    viewclass: 'PharmacyItem'
+                    RecycleBoxLayout:
+                        default_size: None, dp(100)
+                        default_size_hint: 1, None
+                        size_hint_y: None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+                        spacing: dp(10)
+
+<BenchmarkScreen>:
+    name: 'benchmark'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 30
+        spacing: 20
+        
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Label:
+                text: 'Project Benchmark'
+                font_size: 24
+                bold: True
+                color: app.primary_color
+                halign: 'left'
+                text_size: self.size
+                valign: 'middle'
+
+        ScrollView:
+            do_scroll_x: False
+            canvas.before:
+                Color:
+                    rgba: app.card_color
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+            
+            TextInput:
+                id: benchmark_log
+                text: 'Press "Run Benchmark" to start...'
+                readonly: True
+                foreground_color: app.text_color
+                background_color: 0,0,0,0
+                size_hint_y: None
+                height: max(self.minimum_height, self.parent.height)
+                padding: 20
+                
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            spacing: 20
+            
+            RoundedButton:
+                text: 'Run Benchmark'
+                on_press: root.run_tests()
+                
+            RoundedButton:
+                text: 'Back'
+                background_color: app.secondary_color
+                on_press: root.manager.current = 'home'
+
+<ManualEntryScreen>:
+    name: 'manual_entry'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        padding: 20
+        
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1, 1
+            
+            # Card for Input
+            BoxLayout:
+                orientation: 'vertical'
+                padding: 30
+                spacing: 15
+                canvas.before:
+                    Color:
+                        rgba: app.card_color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [20,]
+                
+                Label:
+                    text: 'Manual Prescription Entry'
+                    font_size: 26
+                    bold: True
+                    color: app.primary_color
+                    size_hint_y: None
+                    height: 40
+                    halign: 'left'
+                    text_size: self.size
+
+                Label:
+                    text: 'Type or paste the prescription text below to verify interactions.'
+                    size_hint_y: None
+                    height: 30
+                    color: app.text_color
+                    opacity: 0.7
+                    halign: 'left'
+                    text_size: self.size
+
+                TextInput:
+                    id: manual_input
+                    hint_text: 'E.g., Paracetamol 500mg, Amoxicillin 250mg...'
+                    background_color: app.bg_color
+                    foreground_color: app.text_color
+                    cursor_color: app.primary_color
+                    font_size: 16
+                    padding: 15
+                    multiline: True
+                    # Remove default border if desired, but default is okay.
+                    
+                Label:
+                    id: results_label
+                    text: ''
+                    size_hint_y: None
+                    height: 30
+                    color: app.secondary_color
+                    
+                BoxLayout:
+                    size_hint_y: None
+                    height: 60
+                    spacing: 20
+                    padding: [0, 10, 0, 0]
+                    
+                    RoundedButton:
+                        text: 'Analyze Text'
+                        on_press: root.analyze_manual_text()
+                        
+                    Button:
+                        text: 'Cancel'
+                        size_hint_x: None
+                        width: 100
+                        background_color: 0, 0, 0, 0
+                        color: app.text_color
+                        bold: True
+                        on_press: root.manager.current = 'home'
+                        canvas.before:
+                            Color:
+                                rgba: (0.5, 0.5, 0.5, 0.2)
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [10,]
+
+
+<KnowledgeGraphScreen>:
+    name: 'graph'
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 15
+        
+        # Header
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Label:
+                text: "Medication Knowledge Graph"
+                font_size: 24
+                bold: True
+                color: app.primary_color
+                halign: 'left'
+                text_size: self.size
+
+        # Graph Image
+        Image:
+            id: graph_image
+            source: 'knowledge_graph.png' 
+            allow_stretch: True
+            keep_ratio: True
+            
+        # Footer Buttons
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            spacing: 20
+            
+            RoundedButton:
+                text: "Back to Home"
+                on_press: root.manager.current = 'home'
+                
+            RoundedButton:
+                text: "Refresh Graph"
+                on_press: app.generate_knowledge_graph()
+
+
+<SpinnerImage@Image>:
+    angle: 0
+    canvas.before:
+        PushMatrix
+        Rotate:
+            angle: self.angle
+            origin: self.center
+    canvas.after:
+        PopMatrix
+
+<BootScreen>:
+    name: 'boot'
+    canvas.before:
+        Color:
+            rgba: (0.1, 0.1, 0.1, 1) # Dark background
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: None, None
+            size: self.minimum_size
+            spacing: 20
+            
+            Image:
+                source: 'icon.ico'
+                size_hint: None, None
+                size: 150, 150
+                allow_stretch: True
+                pos_hint: {'center_x': 0.5}
+                
+            Label:
+                text: 'RxShield'
+                font_size: 40
+                bold: True
+                color: (0, 0.8, 0.8, 1) # Teal
+                size_hint: None, None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.5}
+                
+            Widget:
+                size_hint_y: None
+                height: 30
+            
+            SpinnerImage:
+                id: spinner
+                source: 'icon.ico' 
+                size_hint: None, None
+                size: 50, 50
+                pos_hint: {'center_x': 0.5}
+                opacity: 0.8
+
+
+<RemindersScreen>:
+    name: 'reminders'
+    breakfast_input: breakfast_input
+    lunch_input: lunch_input
+    dinner_input: dinner_input
+    alert_toggle: alert_toggle
+
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 40
+        spacing: 30
+
+        # Header
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            Label:
+                text: 'Medication Alerts'
+                font_size: 28
+                bold: True
+                color: app.primary_color
+                size_hint_x: 0.8
+                halign: 'left'
+                text_size: self.size
+                valign: 'middle'
+
+        # Note Card
+        BoxLayout:
+            size_hint_y: None
+            height: 80
+            padding: 15
+            canvas.before:
+                Color:
+                    rgba: (1, 0.9, 0.8, 1) # Light yellow
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+            Label:
+                text: 'Note: Alerts will only trigger when the RxShield application is OPEN/RUNNING.\nPlease keep the app minimized to receive notifications.'
+                color: (0.6, 0.4, 0, 1) # Darker yellow/brown
+                halign: 'center'
+                valign: 'middle'
+
+        # Settings Card
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 30
+            spacing: 20
+            canvas.before:
+                Color:
+                    rgba: app.card_color
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [20,]
+
+            # Breakfast
+            BoxLayout:
+                size_hint_y: None
+                height: 50
+                Label:
+                    text: 'Breakfast Time (HH:MM)'
+                    color: app.text_color
+                    size_hint_x: 0.6
+                    halign: 'left'
+                    text_size: self.size
+                TextInput:
+                    id: breakfast_input
+                    multiline: False
+                    size_hint_x: 0.4
+                    padding: [10, 15]
+
+            # Lunch
+            BoxLayout:
+                size_hint_y: None
+                height: 50
+                Label:
+                    text: 'Lunch Time (HH:MM)'
+                    color: app.text_color
+                    size_hint_x: 0.6
+                    halign: 'left'
+                    text_size: self.size
+                TextInput:
+                    id: lunch_input
+                    multiline: False
+                    size_hint_x: 0.4
+                    padding: [10, 15]
+
+            # Dinner
+            BoxLayout:
+                size_hint_y: None
+                height: 50
+                Label:
+                    text: 'Dinner Time (HH:MM)'
+                    color: app.text_color
+                    size_hint_x: 0.6
+                    halign: 'left'
+                    text_size: self.size
+                TextInput:
+                    id: dinner_input
+                    multiline: False
+                    size_hint_x: 0.4
+                    padding: [10, 15]
+
+            # Enable Toggle
+            BoxLayout:
+                size_hint_y: None
+                height: 50
+                Label:
+                    text: 'Enable Alerts'
+                    color: app.text_color
+                    size_hint_x: 0.6
+                    halign: 'left'
+                    text_size: self.size
+                Switch:
+                    id: alert_toggle
+                    active: False
+                    size_hint_x: 0.4
+
+        # Clock and Demo
+        BoxLayout:
+            size_hint_y: 1
+            orientation: 'vertical'
+            spacing: 10
+            padding: [0, 20]
+            
+            Label:
+                id: clock_label
+                text: '--:--'
+                font_size: 40
+                bold: True
+                color: app.secondary_color
+                
+            Button:
+                text: 'Test Alert (10s)'
+                size_hint: (None, None)
+                size: (150, 40)
+                pos_hint: {'center_x': 0.5}
+                background_color: 0, 0, 0, 0
+                color: app.text_color
+                on_press: root.schedule_demo()
+                canvas.before:
+                    Color:
+                        rgba: (0.8, 0.8, 0.8, 0.5)
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10,]
+
+        # Buttons
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            spacing: 20
+            
+            RoundedButton:
+                text: 'Save & Activate'
+                on_press: root.save_settings()
+                font_size: 18
+
+            RoundedButton:
+                text: 'Back'
+                background_color: app.secondary_color
+                on_press: root.manager.current = 'home'
+
