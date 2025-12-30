@@ -93,7 +93,14 @@ class AdminDashboard(Screen):
 
         # Refresh Analysis Logs
         analysis_logs = get_analysis_logs()
-        self.ids.rv_analysis_logs.data = [{'text': f"{l['timestamp']} - {l['username']}: {l['result_text'][:50]}..."} for l in analysis_logs]
+        self.ids.rv_analysis_logs.data = [
+            {
+                'timestamp': str(l['timestamp']),
+                'username': l['username'],
+                'preview': l['result_text'][:100].replace('\n', ' '),
+                'full_text': l['result_text']
+            } for l in analysis_logs
+        ]
 
     def create_account(self, username, password, role):
         app = App.get_running_app()
@@ -135,6 +142,32 @@ class AdminDashboard(Screen):
 
     def show_popup(self, title, content):
         popup = Popup(title=title, content=Label(text=content), size_hint=(None, None), size=(400, 200))
+        popup.open()
+
+    def show_analysis_detail(self, full_text, username, timestamp):
+        from kivy.uix.boxlayout import BoxLayout
+        from kivy.uix.scrollview import ScrollView
+        from kivy.uix.textinput import TextInput
+        
+        content = BoxLayout(orientation='vertical', padding=10, spacing=10)
+        
+        # Info Label
+        content.add_widget(Label(text=f"User: {username} | Date: {timestamp}", 
+                                size_hint_y=None, height=30, bold=True))
+        
+        # Scrollable Text
+        scroll = ScrollView(do_scroll_x=False)
+        text_input = TextInput(text=full_text, readonly=True, background_color=(1,1,1,1),
+                              size_hint_y=None, height=max(500, len(full_text)//2)) # approximate height
+        scroll.add_widget(text_input)
+        content.add_widget(scroll)
+        
+        # Close Button
+        btn = Button(text='Close', size_hint_y=None, height=50)
+        content.add_widget(btn)
+        
+        popup = Popup(title="Analysis Detail", content=content, size_hint=(0.8, 0.8))
+        btn.bind(on_release=popup.dismiss)
         popup.open()
 
 class HistoryScreen(Screen):

@@ -499,15 +499,45 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+                    
+                    # Columns Headers
+                    BoxLayout:
+                        size_hint_y: None
+                        height: dp(40)
+                        orientation: 'horizontal'
+                        canvas.before:
+                            Color:
+                                rgba: app.primary_color
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                        Label:
+                            text: 'Timestamp'
+                            bold: True
+                            size_hint_x: 0.25
+                        Label:
+                            text: 'Username'
+                            bold: True
+                            size_hint_x: 0.2
+                        Label:
+                            text: 'Preview'
+                            bold: True
+                            size_hint_x: 0.4
+                        Label:
+                            text: 'Action'
+                            bold: True
+                            size_hint_x: 0.15
+
                     RecycleView:
                         id: rv_analysis_logs
-                        viewclass: 'LogLabel'
+                        viewclass: 'AnalysisLogRow'
                         RecycleBoxLayout:
-                            default_size: None, dp(30)
+                            default_size: None, dp(50)
                             default_size_hint: 1, None
                             size_hint_y: None
                             height: self.minimum_height
                             orientation: 'vertical'
+                            spacing: dp(2)
 
             TabbedPanelItem:
                 text: 'User Management'
@@ -593,6 +623,47 @@
         text: root.role
         color: 0,0,0,1
         size_hint_x: 0.5
+
+<AnalysisLogRow@BoxLayout>:
+    timestamp: ''
+    username: ''
+    preview: ''
+    full_text: ''
+    orientation: 'horizontal'
+    padding: [10, 5]
+    spacing: 10
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.95, 0.95, 1) if root.index % 2 == 0 else (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    Label:
+        text: root.timestamp
+        color: 0, 0, 0, 1
+        size_hint_x: 0.25
+        font_size: 14
+    Label:
+        text: root.username
+        color: 0, 0, 0, 1
+        size_hint_x: 0.2
+        font_size: 14
+    Label:
+        text: root.preview
+        color: 0.3, 0.3, 0.3, 1
+        size_hint_x: 0.4
+        font_size: 14
+        shorten: True
+        shorten_from: 'right'
+        halign: 'left'
+        text_size: self.width, None
+    Button:
+        text: 'View'
+        size_hint_x: 0.15
+        on_release: app.root.get_screen('admin_dashboard').show_analysis_detail(root.full_text, root.username, root.timestamp)
+        background_color: app.secondary_color
+        color: 1, 1, 1, 1
 
 <LogLabel@Label>:
     text_size: self.width, None
