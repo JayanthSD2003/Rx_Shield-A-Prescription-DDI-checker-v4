@@ -2,6 +2,8 @@
 
 RxShield is a cutting-edge desktop application designed to empower patients and healthcare providers with instant, AI-driven analysis of medical prescriptions. By leveraging advanced computer vision and large language models, RxShield digitizes prescriptions, identifies medications, checks for Drug-Drug Interactions (DDIs), and visualizes complex health data through an interactive Knowledge Graph.
 
+![RxShield App Screenshot](Screenshots/Screenshot%202025-12-30%20184124.png)
+
 ## 🚀 Key Features
 
 ### 🔍 AI-Powered OCR & Analysis
